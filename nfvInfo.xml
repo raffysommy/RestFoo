@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NFV xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:noNamespaceSchemaLocation="nfvInfo.xsd">
+  <NF-FG deployTime="2016-09-30T09:00:00" name="nffg0">
+    <Node NF-FG="nffg0" name="node0" host="host0" FunctionalType="WEB_SERVER"/>
+    <Node NF-FG="nffg0" name="node1" host="host0" FunctionalType="WEB_CLIENT"/>
+    <Node NF-FG="nffg0" name="node2" host="host1" FunctionalType="FW"/>
+    <Node NF-FG="nffg0" name="node3" FunctionalType="FW"/>
+    <Link NF-FG="nffg0" reqThroughput="2" destNode="node1" name="link0" reqLatency="10" sourceNode="node0"/>
+    <Link NF-FG="nffg0" destNode="node2" name="link1" sourceNode="node1"/>
+    <Link NF-FG="nffg0" destNode="node1" name="link2" sourceNode="node2"/>
+  </NF-FG>
+  <NF-FG deployTime="2016-09-27T17:13:00" name="nffg1">
+    <Node NF-FG="nffg1" name="node4" host="host3" FunctionalType="MAIL_SERVER"/>
+    <Node NF-FG="nffg1" name="node5" host="host0" FunctionalType="MAIL_CLIENT"/>
+    <Node NF-FG="nffg1" name="node6" host="host4" FunctionalType="FW"/>
+    <Node NF-FG="nffg1" name="node7" FunctionalType="FW"/>
+    <Link NF-FG="nffg1" reqThroughput="2" destNode="node5" name="link0" reqLatency="10" sourceNode="node4"/>
+    <Link NF-FG="nffg1" destNode="node6" name="link1" sourceNode="node4"/>
+    <Link NF-FG="nffg1" destNode="node5" name="link2" sourceNode="node7"/>
+  </NF-FG>
+  <Hosts>
+  	<Host MaxVFN="3" diskStorage="10" memory="5" name="host0">
+  		<NodeRef node="node0"/>
+  		<NodeRef node="node1"/>
+  		<NodeRef node="node5"/>
+  	</Host>
+  	<Host MaxVFN="3" diskStorage="10" memory="5" name="host1">
+  		<NodeRef node="node2"/>
+  	</Host>
+  	<Host MaxVFN="5" diskStorage="30" memory="15" name="host2"/><Host MaxVFN="3" diskStorage="10" memory="5" name="host3">
+  		<NodeRef node="node4"/>
+  	</Host>
+  	<Host MaxVFN="3" diskStorage="10" memory="5" name="host4">
+  		<NodeRef node="node5"/>
+  	</Host>
+  	<Host MaxVFN="5" diskStorage="30" memory="15" name="host5"/> </Hosts>
+  <Connections>
+  	<Connection sourceHost="host0" destHost="host1" avgLatency ="1" avgThroughput="10"/>
+  	<Connection sourceHost="host1" destHost="host2" avgLatency ="2" avgThroughput="5"/>	
+  	<Connection sourceHost="host3" destHost="host4" avgLatency ="1" avgThroughput="10"/>
+  	<Connection sourceHost="host4" destHost="host5" avgLatency ="2" avgThroughput="5"/>
+  </Connections>
+  <VNF-Catalog>
+  	<F-Type name="f1" FunctionalType="WEB_CLIENT" reqMemory="1" reqDiskStorage="2"/>
+  	<F-Type name="f2" FunctionalType="WEB_SERVER" reqMemory="2" reqDiskStorage="1"/>
+  	<F-Type name="f3" FunctionalType="FW" reqMemory="3" reqDiskStorage="5"/>
+  	<F-Type name="f4" FunctionalType="NAT" reqMemory="2" reqDiskStorage="4"/>
+  	<F-Type name="f5" FunctionalType="MAIL_CLIENT" reqMemory="1" reqDiskStorage="1"/>
+  	<F-Type name="f6" FunctionalType="MAIL_SERVER" reqMemory="2" reqDiskStorage="10"/>
+  </VNF-Catalog>
+</NFV>
