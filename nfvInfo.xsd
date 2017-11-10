@@ -4,8 +4,8 @@
 	<xs:complexType>
 		<xs:sequence>
 			<xs:element maxOccurs="1" minOccurs="1" ref="NF-FG"/>
-			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Hosts"/>
-			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Connections"/>
+			<xs:element ref="Hosts"/>
+			<xs:element ref="Connections"/>
 			<xs:element ref="VNF-Catalog"/>
 		</xs:sequence>
 	</xs:complexType>
