@@ -3,7 +3,7 @@
 <xs:element name="NFV">
 	<xs:complexType>
 		<xs:sequence>
-			<xs:element maxOccurs="unbounded" minOccurs="0" ref="NF-FG"/>
+			<xs:element maxOccurs="1" minOccurs="1" ref="NF-FG"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Hosts"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Connections"/>
 			<xs:element ref="VNF-Catalog"/>
@@ -87,12 +87,11 @@
 <xs:element name="NF-FG">
 	<xs:complexType>
 		<xs:sequence>
-			<xs:element maxOccurs="unbounded" ref="Node"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Node"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Link"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="deployTime" type="xs:dateTime" use="required"/>
-	</xs:complexType>
+  </xs:complexType>
 </xs:element>
 
 <xs:element name="Node">
@@ -109,7 +108,6 @@
 		<xs:attribute name="sourceNode" type="xs:string" use="required"/>
 		<xs:attribute name="destNode" type="xs:string" use="required"/>
 		<xs:attribute name="reqLatency" type="positiveFloat"/>
-		<xs:attribute name="reqThroughput" type="positiveFloat"/>
 		<xs:attribute name="NF-FG" type="xs:string" use="required"/>
 	</xs:complexType>
 </xs:element>
@@ -126,9 +124,7 @@
 			<xs:element name="NodeRef" type="NodeRefType" maxOccurs="unbounded" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="memory" type="positiveFloat" use="required"/>
 		<xs:attribute name="diskStorage" type="positiveFloat" use="required"/>
-		<xs:attribute name="MaxVFN" type="xs:positiveInteger" use="required"/>
 	</xs:complexType>
 </xs:element>
 <xs:element name="Connections">
@@ -143,7 +139,6 @@
 		<xs:attribute name="sourceHost" type="xs:string" use="required"/>
 		<xs:attribute name="destHost" type="xs:string" use="required"/>
 		<xs:attribute name="avgLatency" type="positiveFloat"/>
-		<xs:attribute name="avgThroughput" type="positiveFloat"/>
 	</xs:complexType>
 </xs:element>
 <xs:element name="VNF-Catalog">
@@ -157,7 +152,6 @@
 	<xs:complexType>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="FunctionalType" type="F-name" use="required"/>
-		<xs:attribute name="reqMemory" type="positiveFloat" use="required"/>
 		<xs:attribute name="reqDiskStorage" type="positiveFloat" use="required"/>
 	</xs:complexType>
 </xs:element>
