@@ -14,10 +14,6 @@
       <xs:selector xpath="Hosts/Host" />
       <xs:field xpath="@name" />
     </xs:key>
-    <xs:keyref name="HostNode" refer="hostKey">
-      <xs:selector xpath="NF-FG/Node" />
-      <xs:field xpath="@host" />
-    </xs:keyref>
     <xs:keyref name="ConnectionSourceHost" refer="hostKey">
       <xs:selector xpath="Connections/Connection" />
       <xs:field xpath="@sourceHost" />
@@ -97,7 +93,6 @@
 <xs:element name="Node">
 	<xs:complexType>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="host" type="xs:string" use="optional"/>
 		<xs:attribute name="NF-FG" type="xs:string" use="required"/>
 		<xs:attribute name="FunctionalType" type="F-name" use="required"/>
 	</xs:complexType>

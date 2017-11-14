@@ -2,9 +2,9 @@
 <NFV xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 		xsi:noNamespaceSchemaLocation="nfvInfo.xsd">
   <NF-FG name="nffg0">
-    <Node NF-FG="nffg0" name="node0" host="host0" FunctionalType="WEB_SERVER"/>
-    <Node NF-FG="nffg0" name="node1" host="host0" FunctionalType="WEB_CLIENT"/>
-    <Node NF-FG="nffg0" name="node2" host="host1" FunctionalType="FW"/>
+    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_SERVER"/>
+    <Node NF-FG="nffg0" name="node1" FunctionalType="WEB_CLIENT"/>
+    <Node NF-FG="nffg0" name="node2" FunctionalType="FW"/>
     <Node NF-FG="nffg0" name="node3" FunctionalType="FW"/>
     <Link NF-FG="nffg0" destNode="node1" name="link0" reqLatency="10" sourceNode="node0"/>
     <Link NF-FG="nffg0" destNode="node2" name="link1" sourceNode="node1"/>
