@@ -6,6 +6,7 @@
   <property name="build.dir" location="build"/>
   <property name="dist.dir" location="dist"/>
   <property name="schema.dir" location="xsd" />
+  <property name="report.dir" location="log" />
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -38,6 +39,7 @@
     <property name="debuglevel" value="lines,vars,source"/>
     <!-- Compile the code from ${src} into ${build} -->
     <javac 
+    	classpath="junit.jar,org.hamcrest.core_1.3.0.v201303031735.jar"
     	includeantruntime="false" 
     	srcdir="${src.dir}" 
     	destdir="${build.dir}" 
@@ -56,5 +58,19 @@
     <jar destfile="${dist.dir}/package-${DSTAMP}.jar" basedir="${build.dir}">
     </jar>
     <jar destfile="${dist.dir}/src-${DSTAMP}.jar" basedir="${src.dir}"/>
+  </target>
+  <target name="junit" depends="compile">
+	    <junit printsummary="yes" haltonfailure="no">
+		<!-- Project classpath, must include junit.jar -->
+		<classpath location="junit.jar" />
+	    <classpath location="org.hamcrest.core_1.3.0.v201303031735.jar" />
+		<!-- test class -->
+		<classpath location="${build.dir}" />
+		<test name="test.TestCase"
+			haltonfailure="no" todir="${report.dir}">
+			<formatter type="plain" />
+			<formatter type="xml" />
+		</test>
+	  </junit>
   </target>
 </project>
