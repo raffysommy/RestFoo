@@ -5,7 +5,7 @@
         <Node name="node1" NF-FG="nffg0" FunctionalType="WEB_CLIENT"/>
         <Node name="node2" NF-FG="nffg0" FunctionalType="FW"/>
         <Node name="node3" NF-FG="nffg0" FunctionalType="FW"/>
-        <Link name="link0" sourceNode="node0" destNode="node1" reqLatency="10.0" NF-FG="nffg0"/>
+        <Link name="link0" sourceNode="node0" destNode="node1" NF-FG="nffg0"/>
         <Link name="link1" sourceNode="node1" destNode="node2" NF-FG="nffg0"/>
         <Link name="link2" sourceNode="node2" destNode="node1" NF-FG="nffg0"/>
     </NF-FG>
@@ -31,12 +31,5 @@
         <Connection sourceHost="host3" destHost="host4" avgLatency="1.0"/>
         <Connection sourceHost="host4" destHost="host5" avgLatency="2.0"/>
     </Connections>
-    <VNF-Catalog>
-        <F-Type name="f1" FunctionalType="WEB_CLIENT" reqDiskStorage="2.0"/>
-        <F-Type name="f2" FunctionalType="WEB_SERVER" reqDiskStorage="1.0"/>
-        <F-Type name="f3" FunctionalType="FW" reqDiskStorage="5.0"/>
-        <F-Type name="f4" FunctionalType="NAT" reqDiskStorage="4.0"/>
-        <F-Type name="f5" FunctionalType="MAIL_CLIENT" reqDiskStorage="1.0"/>
-        <F-Type name="f6" FunctionalType="MAIL_SERVER" reqDiskStorage="10.0"/>
-    </VNF-Catalog>
+    <VNF-Catalog/>
 </NFV>

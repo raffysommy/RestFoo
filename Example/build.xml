@@ -29,7 +29,7 @@
 			<arg value="-d" />
 			<arg value="${src.dir}" />
 			<arg value="-p" />
-			<arg value="jaxb" />
+			<arg value="it.polito.verifoo.rest.jaxb" />
 			<arg value="${schema.dir}/nfvInfo.xsd" />
 		</exec>
 		<touch file="${src.dir}/.flagfile" />
@@ -39,7 +39,8 @@
     <property name="debuglevel" value="lines,vars,source"/>
     <!-- Compile the code from ${src} into ${build} -->
     <javac 
-    	classpath="junit.jar,org.hamcrest.core_1.3.0.v201303031735.jar"
+    	encoding="ISO-8859-1"
+    	classpath="junit.jar;org.hamcrest.core_1.3.0.v201303031735.jar;com.microsoft.z3.jar"
     	includeantruntime="false" 
     	srcdir="${src.dir}" 
     	destdir="${build.dir}" 

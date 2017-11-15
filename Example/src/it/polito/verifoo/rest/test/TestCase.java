@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test;
+package it.polito.verifoo.rest.test;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import jaxb.NFV;
+import it.polito.verifoo.rest.jaxb.NFV;
 
 /**
  * @author Raffaele
@@ -72,7 +72,7 @@ public class TestCase {
             
             // unmarshal a document into a tree of Java content objects
             NFV root = (NFV) u.unmarshal( new FileInputStream( "./testfile/nfvIn.xml" ) );
-            FileOutputStream out=new FileOutputStream("nfvOut.xml");
+            FileOutputStream out=new FileOutputStream("./testfile/nfvOut.xml");
             // create a Marshaller and marshal to std out
             Marshaller m = jc.createMarshaller();
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );

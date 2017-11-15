@@ -2,11 +2,11 @@
 <NFV xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 		xsi:noNamespaceSchemaLocation="nfvInfo.xsd">
   <NF-FG name="nffg0">
-    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_SERVER"/>
-    <Node NF-FG="nffg0" name="node1" FunctionalType="WEB_CLIENT"/>
-    <Node NF-FG="nffg0" name="node2" FunctionalType="FW"/>
-    <Node NF-FG="nffg0" name="node3" FunctionalType="FW"/>
-    <Link NF-FG="nffg0" destNode="node1" name="link0" reqLatency="10" sourceNode="node0"/>
+    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_SERVER" Ip="127.0.1.3"/>
+    <Node NF-FG="nffg0" name="node1" FunctionalType="WEB_CLIENT" Ip="127.0.1.5"/>
+    <Node NF-FG="nffg0" name="node2" FunctionalType="FW" Ip="127.0.1.6"/>
+    <Node NF-FG="nffg0" name="node3" FunctionalType="FW" Ip="127.0.1.7"/>
+    <Link NF-FG="nffg0" destNode="node1" name="link0" sourceNode="node0"/>
     <Link NF-FG="nffg0" destNode="node2" name="link1" sourceNode="node1"/>
     <Link NF-FG="nffg0" destNode="node1" name="link2" sourceNode="node2"/>
   </NF-FG>
@@ -33,11 +33,11 @@
   	<Connection sourceHost="host4" destHost="host5" avgLatency ="2"/>
   </Connections>
   <VNF-Catalog>
-  	<F-Type name="f1" FunctionalType="WEB_CLIENT" reqDiskStorage="2"/>
-  	<F-Type name="f2" FunctionalType="WEB_SERVER" reqDiskStorage="1"/>
-  	<F-Type name="f3" FunctionalType="FW" reqDiskStorage="5"/>
-  	<F-Type name="f4" FunctionalType="NAT" reqDiskStorage="4"/>
-  	<F-Type name="f5" FunctionalType="MAIL_CLIENT" reqDiskStorage="1"/>
-  	<F-Type name="f6" FunctionalType="MAIL_SERVER" reqDiskStorage="10"/>
+  	<VNF name="f1" FunctionalType="WEB_CLIENT" reqDiskStorage="2"/>
+  	<VNF name="f2" FunctionalType="WEB_SERVER" reqDiskStorage="1"/>
+  	<VNF name="f3" FunctionalType="FW" reqDiskStorage="5"/>
+  	<VNF name="f4" FunctionalType="NAT" reqDiskStorage="4"/>
+  	<VNF name="f5" FunctionalType="MAIL_CLIENT" reqDiskStorage="1"/>
+  	<VNF name="f6" FunctionalType="MAIL_SERVER" reqDiskStorage="10"/>
   </VNF-Catalog>
 </NFV>
