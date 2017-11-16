@@ -66,7 +66,7 @@ public class TestCase {
 	}
 
 	@Test
-	public void test() {
+	public void testCorrectXML() {
 		try {
             // create a JAXBContext capable of handling the generated classes
             JAXBContext jc = JAXBContext.newInstance( "it.polito.verifoo.rest.jaxb" );
@@ -103,6 +103,31 @@ public class TestCase {
 			fail(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	@Test(expected=JAXBException.class)
+	public void testWrongFormat() throws Exception {
+        // create a JAXBContext capable of handling the generated classes
+        JAXBContext jc = JAXBContext.newInstance( "it.polito.verifoo.rest.jaxb" );
+        
+        // create an Unmarshaller
+        Unmarshaller u = jc.createUnmarshaller();
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+        Schema schema = sf.newSchema( new File( "./xsd/nfvInfo.xsd" )); 
+        u.setSchema(schema);
+        u.unmarshal( new FileInputStream( "./testfile/nfvNoXML.xml" ) );
+        fail("The test not trown an exception");
+	}
+	@Test(expected=JAXBException.class)
+	public void testInvalidFormat() throws Exception {
+        // create a JAXBContext capable of handling the generated classes
+        JAXBContext jc = JAXBContext.newInstance( "it.polito.verifoo.rest.jaxb" );
+        
+        // create an Unmarshaller
+        Unmarshaller u = jc.createUnmarshaller();
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+        Schema schema = sf.newSchema( new File( "./xsd/nfvInfo.xsd" )); 
+        u.setSchema(schema);
+        u.unmarshal( new FileInputStream( "./testfile/nfvInvalid.xml" ) );            
 	}
 
 }
