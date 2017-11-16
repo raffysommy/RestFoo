@@ -14,16 +14,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import it.polito.verifoo.rest.jaxb.NFV;
 
@@ -65,11 +69,13 @@ public class TestCase {
 	public void test() {
 		try {
             // create a JAXBContext capable of handling the generated classes
-            JAXBContext jc = JAXBContext.newInstance( "jaxb" );
+            JAXBContext jc = JAXBContext.newInstance( "it.polito.verifoo.rest.jaxb" );
             
             // create an Unmarshaller
             Unmarshaller u = jc.createUnmarshaller();
-            
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+            Schema schema = sf.newSchema( new File( "./xsd/nfvInfo.xsd" )); 
+            u.setSchema(schema);
             // unmarshal a document into a tree of Java content objects
             NFV root = (NFV) u.unmarshal( new FileInputStream( "./testfile/nfvIn.xml" ) );
             FileOutputStream out=new FileOutputStream("./testfile/nfvOut.xml");
@@ -88,12 +94,15 @@ public class TestCase {
             org.junit.Assert.assertEquals(f1, f2);
             
         } catch( JAXBException je ) {
-        	fail("Error while unmarshalling or marshalling");
+        	fail(je.getMessage());
         } catch( IOException ioe ) {
         	fail(ioe.getMessage());
         } catch( ClassCastException cce) {        	
     		fail("Wrong data type found in XML document");
-        }
+        } catch (SAXException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 }
