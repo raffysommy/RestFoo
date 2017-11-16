@@ -40,7 +40,7 @@
     <!-- Compile the code from ${src} into ${build} -->
     <javac 
     	encoding="ISO-8859-1"
-    	classpath="junit.jar;org.hamcrest.core_1.3.0.v201303031735.jar;com.microsoft.z3.jar"
+    	classpath="junit.jar;org.hamcrest.core_1.3.0.v201303031735.jar;com.microsoft.z3.jar;Verifoo.jar"
     	includeantruntime="false" 
     	srcdir="${src.dir}" 
     	destdir="${build.dir}" 
