@@ -3,4 +3,3 @@ install: ant test
 jdk:
   - oraclejdk8
   - oraclejdk9
-  - openjdk7
