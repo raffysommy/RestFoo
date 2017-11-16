@@ -6,9 +6,9 @@
     <Node NF-FG="nffg0" name="node1" FunctionalType="FW" Ip="ip_2"/>
     <Node NF-FG="nffg0" name="node2" FunctionalType="FW" Ip="ip_3"/>
     <Node NF-FG="nffg0" name="node3" FunctionalType="WEB_SERVER" Ip="ip_4"/>
-    <Link NF-FG="nffg0" sourceNode="node0" destNode="node1" name="link0"/>
-    <Link NF-FG="nffg0" sourceNode="node1" destNode="node2" name="link1"/>
-    <Link NF-FG="nffg0" sourceNode="node2" destNode="node3" name="link2"/>
+    <Link NF-FG="nffg0" sourceNode="node0" destNode="node1" name="link0" reqLatency="2"/>
+    <Link NF-FG="nffg0" sourceNode="node1" destNode="node2" name="link1" reqLatency="2"/>
+    <Link NF-FG="nffg0" sourceNode="node2" destNode="node3" name="link2" reqLatency="2"/>
   </NF-FG>
   <Hosts>
   	<Host diskStorage="10" name="host0">
