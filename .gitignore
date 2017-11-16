@@ -3,7 +3,7 @@
 ################################################################################
 
 /.vs
-/Example/log/
-/Example/build/
-/Example/bin/
-/Example/.classpath
+/log/
+/build/
+/bin/
+/.classpath
