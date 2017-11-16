@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.11.15 alle 10:54:36 PM CET 
+// Generato il: 2017.11.16 alle 12:05:13 PM CET 
 //
 
 
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="FunctionalType" use="required" type="{}F-name" />
- *       &lt;attribute name="reqDiskStorage" use="required" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="reqDiskStorage" use="required" type="{}positiveFloat" />
  *       &lt;attribute name="configuration" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,7 +45,7 @@ public class VNF {
     @XmlAttribute(name = "FunctionalType", required = true)
     protected FName functionalType;
     @XmlAttribute(name = "reqDiskStorage", required = true)
-    protected int reqDiskStorage;
+    protected float reqDiskStorage;
     @XmlAttribute(name = "configuration")
     protected String configuration;
 
@@ -101,7 +101,7 @@ public class VNF {
      * Recupera il valore della proprietà reqDiskStorage.
      * 
      */
-    public int getReqDiskStorage() {
+    public float getReqDiskStorage() {
         return reqDiskStorage;
     }
 
@@ -109,7 +109,7 @@ public class VNF {
      * Imposta il valore della proprietà reqDiskStorage.
      * 
      */
-    public void setReqDiskStorage(int value) {
+    public void setReqDiskStorage(float value) {
         this.reqDiskStorage = value;
     }
 

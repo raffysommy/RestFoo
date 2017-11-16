@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.11.15 alle 10:54:36 PM CET 
+// Generato il: 2017.11.16 alle 12:05:13 PM CET 
 //
 
 
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="sourceHost" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="destHost" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="avgLatency" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="avgLatency" type="{}positiveFloat" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,7 +44,7 @@ public class Connection {
     @XmlAttribute(name = "destHost", required = true)
     protected String destHost;
     @XmlAttribute(name = "avgLatency")
-    protected Integer avgLatency;
+    protected Float avgLatency;
 
     /**
      * Recupera il valore della proprietà sourceHost.
@@ -99,10 +99,10 @@ public class Connection {
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link Float }
      *     
      */
-    public Integer getAvgLatency() {
+    public Float getAvgLatency() {
         return avgLatency;
     }
 
@@ -111,10 +111,10 @@ public class Connection {
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link Float }
      *     
      */
-    public void setAvgLatency(Integer value) {
+    public void setAvgLatency(Float value) {
         this.avgLatency = value;
     }
 

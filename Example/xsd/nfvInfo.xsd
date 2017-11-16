@@ -103,6 +103,7 @@
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="sourceNode" type="xs:string" use="required"/>
 		<xs:attribute name="destNode" type="xs:string" use="required"/>
+		<xs:attribute name="reqLatency" type="xs:int" use="required"/>
 		<xs:attribute name="NF-FG" type="xs:string" use="required"/>
 	</xs:complexType>
 </xs:element>
