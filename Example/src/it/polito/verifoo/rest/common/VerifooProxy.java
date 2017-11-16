@@ -7,18 +7,11 @@ import java.util.stream.Collectors;
 
 import com.microsoft.z3.Context;
 import com.microsoft.z3.DatatypeExpr;
+import com.microsoft.z3.Status;
 
-import it.polito.verifoo.rest.jaxb.Connections;
-import it.polito.verifoo.rest.jaxb.FName;
-import it.polito.verifoo.rest.jaxb.Hosts;
-import it.polito.verifoo.rest.jaxb.NFFG;
-import it.polito.verifoo.rest.jaxb.Node;
-import it.polito.verifoo.rest.jaxb.VNFCatalog;
-import it.polito.verigraph.mcnet.components.Checker;
-import it.polito.verigraph.mcnet.components.NetContext;
-import it.polito.verigraph.mcnet.components.Network;
-import it.polito.verigraph.mcnet.components.NetworkObject;
-import it.polito.verigraph.mcnet.components.Tuple;
+import it.polito.verifoo.components.RoutingTable;
+import it.polito.verifoo.rest.jaxb.*;
+import it.polito.verigraph.mcnet.components.*;
 import it.polito.verigraph.mcnet.netobjs.*;
 
 public class VerifooProxy {
@@ -28,16 +21,19 @@ public class VerifooProxy {
 	    private HashMap<Node,NetworkObject> netobjs;
 	    private ArrayList<Tuple<NetworkObject,ArrayList<DatatypeExpr>>> adm;
 		public Checker check;
-	    public VerifooProxy(Context ctx,NFFG nffg,Hosts hosts,Connections conns,VNFCatalog vnf){
-			this.ctx=ctx;
-			ArrayList<String> nodesname=new ArrayList<String>();
-			ArrayList<String> nodesip=new ArrayList<String>();
+	    public VerifooProxy(NFFG nffg,Hosts hosts,Connections conns,VNFCatalog vnf) throws BadNffgException{
+			HashMap<String, String> cfg = new HashMap<String, String>();
+		    cfg.put("model", "true");
+		    ctx = new Context(cfg);
 		    List<Node> nodes=nffg.getNode();
-			nodes.forEach((n)->{
-				nodesname.add(n.getName());
-				nodesip.add(n.getIp());
-			});
-			nctx = new NetContext (ctx,nodesname.toArray(),nodesip.toArray());
+			String[] nodesname=new String[nodes.size()];
+			String[] nodesip=new String[nodes.size()];
+		    for(int i = 0; i < nodes.size(); i++){
+		    	nodesname[i] = new String(nodes.get(i).getName());
+				nodesip[i] = new String(nodes.get(i).getIp());
+		    }
+			nctx = new NetContext (ctx,nodesname,nodesip);
+			//System.out.println(nctx.am);
 			net = new Network (ctx,new Object[]{nctx});
 			netobjs=new HashMap<Node,NetworkObject>();
 			nodes.forEach(this::generateNetworkObject);
@@ -45,12 +41,17 @@ public class VerifooProxy {
 			nodes.forEach(this::generateAddressMapping);
 		    net.setAddressMappings(adm);
 		    //TODO routing table and acl
-		    net.attach((NetworkObject[]) netobjs.entrySet().stream().map((e)->e.getValue()).collect(Collectors.toList()).toArray());
+		    checkNffg(nffg);
+		    netobjs.entrySet().forEach(e ->  {
+							    	net.attach(e.getValue());
+							    }
+		    		);
 		    check = new Checker(ctx,nctx,net);
 	    }
 	    private void generateAddressMapping(Node n){
 			ArrayList<DatatypeExpr> al = new ArrayList<DatatypeExpr>();
-  			al.add(nctx.am.get(n.getIp()));
+			//System.out.println("Adding " + n.getIp() +"/"+ nctx.am.get(n.getIp()));
+			al.add(nctx.am.get(n.getIp()));
 			adm.add(new Tuple<>(netobjs.get(n), al));
 	    }
 		private void generateNetworkObject(Node n){
@@ -104,11 +105,12 @@ public class VerifooProxy {
 					break;
 				}
 				case WEB_CLIENT:{
-					netobjs.put(n,new PolitoWebClient(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
+					// for PolitoWebClient is needed another parameter
+					netobjs.put(n,new PolitoEndHost(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
 					break;
 				}
 				case WEB_SERVER:{
-					netobjs.put(n,new PolitoWebServer(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
+					netobjs.put(n,new PolitoEndHost(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
 					break;
 				}
 				default:{
@@ -117,4 +119,62 @@ public class VerifooProxy {
 				}
 			}
 		}
+		
+		
+		private void checkNffg(NFFG nffg) throws BadNffgException{
+			List<Node> nodes = nffg.getNode();
+            long nMailServer = nodes.stream()
+	            	 .filter((n) -> {return n.getFunctionalType() == FName.MAIL_SERVER;})
+	            	 .count();
+            long nWebServer = nodes.stream()
+	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_SERVER;})
+	            	 .count();
+            long nMailClient = nodes.stream()
+	            	 .filter((n) -> {return n.getFunctionalType() == FName.MAIL_SERVER;})
+	            	 .count();
+            long nWebClient = nodes.stream()
+	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_SERVER;})
+	            	 .count();
+            if(nMailServer != nMailClient || nWebServer != nWebClient || nMailServer+nWebServer>1){
+            	System.err.println("Only one client and one server of the same type is allowed");
+            	throw new BadNffgException();
+            }
+            Node client = nodes.stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_CLIENT || n.getFunctionalType() == FName.WEB_CLIENT;}).findFirst().get();
+            Node server = nodes.stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_SERVER || n.getFunctionalType() == FName.WEB_SERVER;}).findFirst().get();
+            setNextHop(client, server, nffg);
+			
+		}
+		
+		private void setNextHop(Node source, Node server, NFFG nffg){
+			ArrayList<RoutingTable> rt = new ArrayList<RoutingTable>();
+			System.out.println("Searching next hop for " + source.getName() + " towards " + server.getName());
+			if(source.getName().compareTo(server.getName()) == 0){
+				//System.out.println(netobjs.get(source));
+				//net.routingTable2(netobjs.get(source), rt);
+				return;
+			}
+			Link link = nffg.getLink().stream().filter(l -> l.getSourceNode().compareTo(source.getName()) == 0).findFirst().get();
+			Node next = nffg.getNode().stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
+			setNextHop(next, server, nffg);
+			System.out.println("Route: From " + source.getName() 
+							+ " to " + nctx.am.get(server.getIp()) 
+							+ " -> next hop: " + netobjs.get(source));
+			rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(source), link.getReqLatency(), nctx.x11));
+			net.routingTable2(netobjs.get(source), rt);
+		}
+		
+		public void checkNFFGProperty(NFFG nffg){
+
+            Node source = nffg.getNode().stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_CLIENT || n.getFunctionalType() == FName.WEB_CLIENT;}).findFirst().get();
+            Node dest = nffg.getNode().stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_SERVER || n.getFunctionalType() == FName.WEB_SERVER;}).findFirst().get();
+            
+			IsolationResult ret = this.check.checkIsolationProperty(netobjs.get(source), netobjs.get(dest));
+			if (ret.result == Status.UNSATISFIABLE){
+		     	   System.out.println("UNSAT"); // Nodes a and b are isolated
+		    	}else{
+		     		System.out.println("SAT ");
+		     		System.out.print( ""+ret.model); //p.printModel(ret.model);
+		     	}
+		}
+		
 }

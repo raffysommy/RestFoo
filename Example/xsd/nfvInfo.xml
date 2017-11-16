@@ -2,13 +2,13 @@
 <NFV xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 		xsi:noNamespaceSchemaLocation="nfvInfo.xsd">
   <NF-FG name="nffg0">
-    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_SERVER" Ip="127.0.1.3"/>
-    <Node NF-FG="nffg0" name="node1" FunctionalType="WEB_CLIENT" Ip="127.0.1.5"/>
-    <Node NF-FG="nffg0" name="node2" FunctionalType="FW" Ip="127.0.1.6"/>
-    <Node NF-FG="nffg0" name="node3" FunctionalType="FW" Ip="127.0.1.7"/>
-    <Link NF-FG="nffg0" destNode="node1" name="link0" sourceNode="node0"/>
-    <Link NF-FG="nffg0" destNode="node2" name="link1" sourceNode="node1"/>
-    <Link NF-FG="nffg0" destNode="node1" name="link2" sourceNode="node2"/>
+    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_CLIENT" Ip="ip_1"/>
+    <Node NF-FG="nffg0" name="node1" FunctionalType="FW" Ip="ip_2"/>
+    <Node NF-FG="nffg0" name="node2" FunctionalType="FW" Ip="ip_3"/>
+    <Node NF-FG="nffg0" name="node3" FunctionalType="WEB_SERVER" Ip="ip_4"/>
+    <Link NF-FG="nffg0" sourceNode="node0" destNode="node1" name="link0"/>
+    <Link NF-FG="nffg0" sourceNode="node1" destNode="node2" name="link1"/>
+    <Link NF-FG="nffg0" sourceNode="node2" destNode="node3" name="link2"/>
   </NF-FG>
   <Hosts>
   	<Host diskStorage="10" name="host0">
