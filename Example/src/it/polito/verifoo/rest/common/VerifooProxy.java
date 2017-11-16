@@ -147,7 +147,7 @@ public class VerifooProxy {
 		
 		private void setNextHop(Node source, Node server, NFFG nffg){
 			ArrayList<RoutingTable> rt = new ArrayList<RoutingTable>();
-			System.out.println("Searching next hop for " + source.getName() + " towards " + server.getName());
+			//System.out.println("Searching next hop for " + source.getName() + " towards " + server.getName());
 			if(source.getName().compareTo(server.getName()) == 0){
 				//System.out.println(netobjs.get(source));
 				//net.routingTable2(netobjs.get(source), rt);
@@ -156,10 +156,10 @@ public class VerifooProxy {
 			Link link = nffg.getLink().stream().filter(l -> l.getSourceNode().compareTo(source.getName()) == 0).findFirst().get();
 			Node next = nffg.getNode().stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
 			setNextHop(next, server, nffg);
-			System.out.println("Route: From " + source.getName() 
+			/*System.out.println("Route: From " + source.getName() 
 							+ " to " + nctx.am.get(server.getIp()) 
-							+ " -> next hop: " + netobjs.get(source));
-			rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(source), link.getReqLatency(), nctx.x11));
+							+ " -> next hop: " + netobjs.get(next));*/
+			rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(next), link.getReqLatency(), nctx.x11));
 			net.routingTable2(netobjs.get(source), rt);
 		}
 		
