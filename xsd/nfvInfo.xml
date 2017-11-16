@@ -2,13 +2,16 @@
 <NFV xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 		xsi:noNamespaceSchemaLocation="nfvInfo.xsd">
   <NF-FG name="nffg0">
-    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_CLIENT" Ip="ip_1"/>
-    <Node NF-FG="nffg0" name="node1" FunctionalType="FW" Ip="ip_2"/>
-    <Node NF-FG="nffg0" name="node2" FunctionalType="FW" Ip="ip_3"/>
-    <Node NF-FG="nffg0" name="node3" FunctionalType="WEB_SERVER" Ip="ip_4"/>
-    <Link NF-FG="nffg0" sourceNode="node0" destNode="node1" name="link0" reqLatency="2"/>
-    <Link NF-FG="nffg0" sourceNode="node1" destNode="node2" name="link1" reqLatency="2"/>
-    <Link NF-FG="nffg0" sourceNode="node2" destNode="node3" name="link2" reqLatency="2"/>
+    <Node NF-FG="nffg0" name="node0" FunctionalType="WEB_CLIENT" Ip="ip_0"/>
+    <Node NF-FG="nffg0" name="node1" FunctionalType="FW" Ip="ip_1"/>
+    <Node NF-FG="nffg0" name="node2" FunctionalType="IDS" Ip="ip_2"/>
+    <Node NF-FG="nffg0" name="node3" FunctionalType="FW" Ip="ip_3"/>
+    <Node NF-FG="nffg0" name="node4" FunctionalType="WEB_SERVER" Ip="ip_4"/>
+    <Link NF-FG="nffg0" sourceNode="node0" destNode="node1" reqLatency="10" name="link0"/>
+    <Link NF-FG="nffg0" sourceNode="node1" destNode="node3" reqLatency="20" name="link1"/>
+    <Link NF-FG="nffg0" sourceNode="node3" destNode="node4" reqLatency="30" name="link2"/>
+    <Link NF-FG="nffg0" sourceNode="node1" destNode="node2" reqLatency="30" name="link3"/>
+    <Link NF-FG="nffg0" sourceNode="node2" destNode="node4" reqLatency="30" name="link4"/>
   </NF-FG>
   <Hosts>
   	<Host diskStorage="10" name="host0">

@@ -3,6 +3,8 @@ package it.polito.verifoo.rest.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.microsoft.z3.Context;
 import com.microsoft.z3.DatatypeExpr;
 import com.microsoft.z3.Status;
@@ -88,11 +90,12 @@ public class VerifooProxy {
 					break;
 				}
 				case MAIL_CLIENT:{
-					netobjs.put(n,new PolitoMailClient(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
+					netobjs.put(n,new PolitoEndHost(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
 					break;
 				}
+				// TODO for PolitoMailClient is needed another parameter
 				case MAIL_SERVER:{
-					netobjs.put(n,new PolitoMailServer(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
+					netobjs.put(n,new PolitoEndHost(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
 					break;
 				}
 				case NAT:{					
@@ -103,7 +106,7 @@ public class VerifooProxy {
 					break;
 				}
 				case WEB_CLIENT:{
-					// for PolitoWebClient is needed another parameter
+					// TODO for PolitoWebClient is needed another parameter
 					netobjs.put(n,new PolitoEndHost(ctx,new Object[]{nctx.nm.get(n.getName()),net,nctx}));
 					break;
 				}
@@ -128,11 +131,15 @@ public class VerifooProxy {
 	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_SERVER;})
 	            	 .count();
             long nMailClient = nodes.stream()
-	            	 .filter((n) -> {return n.getFunctionalType() == FName.MAIL_SERVER;})
+	            	 .filter((n) -> {return n.getFunctionalType() == FName.MAIL_CLIENT;})
 	            	 .count();
             long nWebClient = nodes.stream()
-	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_SERVER;})
+	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_CLIENT;})
 	            	 .count();
+            /*System.out.println("nMailServer: " + nMailServer +
+            				   " nMailClient: " + nMailClient +
+            				   " nWebServer: " + nWebServer +
+            				   " nWebClient: " + nWebClient);*/
             if(nMailServer != nMailClient || nWebServer != nWebClient || nMailServer+nWebServer>1){
             	System.err.println("Only one client and one server of the same type is allowed");
             	throw new BadNffgException();
@@ -143,22 +150,31 @@ public class VerifooProxy {
 			
 		}
 		
-		private void setNextHop(Node source, Node server, NFFG nffg){
+		private boolean setNextHop(Node source, Node server, NFFG nffg) throws BadNffgException{
 			ArrayList<RoutingTable> rt = new ArrayList<RoutingTable>();
 			//System.out.println("Searching next hop for " + source.getName() + " towards " + server.getName());
 			if(source.getName().compareTo(server.getName()) == 0){
-				//System.out.println(netobjs.get(source));
-				//net.routingTable2(netobjs.get(source), rt);
-				return;
+				return true;
 			}
-			Link link = nffg.getLink().stream().filter(l -> l.getSourceNode().compareTo(source.getName()) == 0).findFirst().get();
-			Node next = nffg.getNode().stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
-			setNextHop(next, server, nffg);
-			/*System.out.println("Route: From " + source.getName() 
-							+ " to " + nctx.am.get(server.getIp()) 
-							+ " -> next hop: " + netobjs.get(next));*/
-			rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(next), link.getReqLatency(), nctx.x11));
-			net.routingTable2(netobjs.get(source), rt);
+			List<Link> outgoingLinks = nffg.getLink().stream().filter(l -> l.getSourceNode().compareTo(source.getName()) == 0).collect(Collectors.toList());
+			if(outgoingLinks.size() == 0){
+				System.out.println("Route: From " + source.getName() 
+									+ " to " + nctx.am.get(server.getIp()) 
+									+ " -> Dead End");
+				throw new BadNffgException();
+			}
+			for(Link link : outgoingLinks){
+				Node next = nffg.getNode().stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
+				if(setNextHop(next, server, nffg)){
+					System.out.println("Route: From " + source.getName() 
+									+ " to " + nctx.am.get(server.getIp()) 
+									+ " -> next hop: " + netobjs.get(next));
+					rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(next), link.getReqLatency(), nctx.x11));
+					net.routingTable2(netobjs.get(source), rt);
+				}
+			}
+			return true;
+			
 		}
 		
 		public void checkNFFGProperty(NFFG nffg){

@@ -1,15 +1,11 @@
-import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.IOException;
-import javax.xml.XMLConstants;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import org.xml.sax.SAXException;
 
 import com.microsoft.z3.Context;
 
@@ -26,12 +22,10 @@ public class Main {
             
             // create an Unmarshaller
             Unmarshaller u = jc.createUnmarshaller();
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
-            Schema schema = sf.newSchema( new File( "./xsd/nfvInfo.xsd" )); 
-            u.setSchema(schema);
             // unmarshal a document into a tree of Java content objects
-            NFV root = (NFV) u.unmarshal( new FileInputStream( "./xsd/nfvInfo.xml" ));
+            NFV root = (NFV) u.unmarshal( new FileInputStream( "./xsd/nfvInfo.xml" ) );
 			// make changes here to the root
+            
              //TODO after routing table and acl are implemented
             
 			VerifooProxy test = new VerifooProxy(root.getNFFG(), root.getHosts(), root.getConnections(), root.getVNFCatalog());
@@ -58,9 +52,6 @@ public class Main {
 			System.out.println("NFFG semantically incorrect");
         	e.printStackTrace();
             System.exit(1);
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
