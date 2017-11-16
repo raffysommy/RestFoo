@@ -60,14 +60,14 @@
     </jar>
     <jar destfile="${dist.dir}/src-${DSTAMP}.jar" basedir="${src.dir}"/>
   </target>
-  <target name="junit" depends="compile">
+  <target name="test" depends="compile">
 	    <junit printsummary="yes" haltonfailure="no">
 		<!-- Project classpath, must include junit.jar -->
 		<classpath location="junit.jar" />
 	    <classpath location="org.hamcrest.core_1.3.0.v201303031735.jar" />
 		<!-- test class -->
 		<classpath location="${build.dir}" />
-		<test name="test.TestCase"
+		<test name="it.polito.verifoo.rest.test.TestCase"
 			haltonfailure="no" todir="${report.dir}">
 			<formatter type="plain" />
 			<formatter type="xml" />
