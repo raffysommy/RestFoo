@@ -15,15 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java per NodeRefType complex type.
+ * <p>Classe Java per ConfigurationType complex type.
  * 
  * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
  * 
  * <pre>
- * &lt;complexType name="NodeRefType">
+ * &lt;complexType name="ConfigurationType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="node" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="value" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -32,34 +33,60 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NodeRefType")
-public class NodeRefType {
+@XmlType(name = "ConfigurationType")
+public class ConfigurationType {
 
-    @XmlAttribute(name = "node", required = true)
-    protected String node;
+    @XmlAttribute(name = "name")
+    protected String name;
+    @XmlAttribute(name = "value", required = true)
+    protected String value;
 
     /**
-     * Recupera il valore della proprietà node.
+     * Recupera il valore della proprietà name.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getNode() {
-        return node;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Imposta il valore della proprietà node.
+     * Imposta il valore della proprietà name.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setNode(String value) {
-        this.node = value;
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Recupera il valore della proprietà value.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Imposta il valore della proprietà value.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

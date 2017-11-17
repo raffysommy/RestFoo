@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.11.17 alle 10:20:28 PM CET 
+// Generato il: 2017.11.17 alle 11:18:40 PM CET 
 //
 
 
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="NF-FG" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="FunctionalType" use="required" type="{}F-name" />
+ *       &lt;attribute name="VNF" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="Ip" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -44,8 +44,8 @@ public class Node {
     protected String name;
     @XmlAttribute(name = "NF-FG", required = true)
     protected String nffg;
-    @XmlAttribute(name = "FunctionalType", required = true)
-    protected FName functionalType;
+    @XmlAttribute(name = "VNF", required = true)
+    protected String vnf;
     @XmlAttribute(name = "Ip", required = true)
     protected String ip;
 
@@ -98,27 +98,27 @@ public class Node {
     }
 
     /**
-     * Recupera il valore della proprietà functionalType.
+     * Recupera il valore della proprietà vnf.
      * 
      * @return
      *     possible object is
-     *     {@link FName }
+     *     {@link String }
      *     
      */
-    public FName getFunctionalType() {
-        return functionalType;
+    public String getVNF() {
+        return vnf;
     }
 
     /**
-     * Imposta il valore della proprietà functionalType.
+     * Imposta il valore della proprietà vnf.
      * 
      * @param value
      *     allowed object is
-     *     {@link FName }
+     *     {@link String }
      *     
      */
-    public void setFunctionalType(FName value) {
-        this.functionalType = value;
+    public void setVNF(String value) {
+        this.vnf = value;
     }
 
     /**

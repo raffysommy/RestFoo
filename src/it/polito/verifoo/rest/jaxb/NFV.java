@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.11.17 alle 10:20:28 PM CET 
+// Generato il: 2017.11.17 alle 11:18:40 PM CET 
 //
 
 
@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element ref="{}Hosts"/>
  *         &lt;element ref="{}Connections"/>
  *         &lt;element ref="{}VNF-Catalog"/>
+ *         &lt;element name="ParsingString" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,7 +43,8 @@ import javax.xml.bind.annotation.XmlType;
     "nffg",
     "hosts",
     "connections",
-    "vnfCatalog"
+    "vnfCatalog",
+    "parsingString"
 })
 @XmlRootElement(name = "NFV")
 public class NFV {
@@ -55,6 +57,8 @@ public class NFV {
     protected Connections connections;
     @XmlElement(name = "VNF-Catalog", required = true)
     protected VNFCatalog vnfCatalog;
+    @XmlElement(name = "ParsingString")
+    protected String parsingString;
 
     /**
      * Recupera il valore della proprietà nffg.
@@ -150,6 +154,30 @@ public class NFV {
      */
     public void setVNFCatalog(VNFCatalog value) {
         this.vnfCatalog = value;
+    }
+
+    /**
+     * Recupera il valore della proprietà parsingString.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getParsingString() {
+        return parsingString;
+    }
+
+    /**
+     * Imposta il valore della proprietà parsingString.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setParsingString(String value) {
+        this.parsingString = value;
     }
 
 }

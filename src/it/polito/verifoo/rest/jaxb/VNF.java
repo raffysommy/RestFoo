@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.11.17 alle 10:20:28 PM CET 
+// Generato il: 2017.11.17 alle 11:18:40 PM CET 
 //
 
 
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}Property" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Configuration" type="{}ConfigurationType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="FunctionalType" use="required" type="{}F-name" />
@@ -42,13 +42,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "property"
+    "configuration"
 })
 @XmlRootElement(name = "VNF")
 public class VNF {
 
-    @XmlElement(name = "Property")
-    protected List<Property> property;
+    @XmlElement(name = "Configuration")
+    protected List<ConfigurationType> configuration;
     @XmlAttribute(name = "name", required = true)
     protected String name;
     @XmlAttribute(name = "FunctionalType", required = true)
@@ -57,32 +57,32 @@ public class VNF {
     protected float reqDiskStorage;
 
     /**
-     * Gets the value of the property property.
+     * Gets the value of the configuration property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the property property.
+     * This is why there is not a <CODE>set</CODE> method for the configuration property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getProperty().add(newItem);
+     *    getConfiguration().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Property }
+     * {@link ConfigurationType }
      * 
      * 
      */
-    public List<Property> getProperty() {
-        if (property == null) {
-            property = new ArrayList<Property>();
+    public List<ConfigurationType> getConfiguration() {
+        if (configuration == null) {
+            configuration = new ArrayList<ConfigurationType>();
         }
-        return this.property;
+        return this.configuration;
     }
 
     /**
