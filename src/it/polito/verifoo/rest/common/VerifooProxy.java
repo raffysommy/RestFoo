@@ -28,11 +28,16 @@ public class VerifooProxy {
 	    private ArrayList<Tuple<NetworkObject,ArrayList<DatatypeExpr>>> adm;
 		public Checker check;
 		private Logger logger = LogManager.getLogger("mylog");
-	    public VerifooProxy(NFFG nffg,Hosts hosts,Connections conns,VNFCatalog vnf) throws BadNffgException{
+		private List<VNF> vnfCat;
+		List<Node> nodes;
+		NFFG nffg;
+	    public VerifooProxy(NFFG nffg,Hosts hosts,Connections conns, VNFCatalog vnfCat) throws BadNffgException{
 			HashMap<String, String> cfg = new HashMap<String, String>();
 		    cfg.put("model", "true");
 		    ctx = new Context(cfg);
-		    List<Node> nodes=nffg.getNode();
+		    nodes=nffg.getNode();
+		    this.vnfCat = vnfCat.getVNF();
+		    this.nffg = nffg;
 			String[] nodesname=new String[nodes.size()];
 			String[] nodesip=new String[nodes.size()];
 		    for(int i = 0; i < nodes.size(); i++){
@@ -48,7 +53,7 @@ public class VerifooProxy {
 			nodes.forEach(this::generateAddressMapping);
 		    net.setAddressMappings(adm);
 		    //TODO routing table and acl
-		    checkNffg(nffg);
+		    checkNffg();
 		    netobjs.entrySet().forEach(e ->  {
 							    	net.attach(e.getValue());
 							    }
@@ -56,8 +61,14 @@ public class VerifooProxy {
 		    
 		    check = new Checker(ctx,nctx,net);
 	    }
+	    
+	    private FName getFunctionalType(String vnf){
+	    	return this.vnfCat.stream().filter(nf -> nf.getName().compareTo(vnf)==0).findFirst().get().getFunctionalType(); 
+	    }
+	    
 		private void generateAcl(Node n){
-			if(n.getFunctionalType().equals(FName.FW)){
+			
+			if(getFunctionalType(n.getVNF()).equals(FName.FW)){
 				
 			}
 		}
@@ -68,7 +79,7 @@ public class VerifooProxy {
 			adm.add(new Tuple<>(netobjs.get(n), al));
 	    }
 		private void generateNetworkObject(Node n){
-			FName ftype=n.getFunctionalType();
+			FName ftype=getFunctionalType(n.getVNF());
 			switch (ftype) {
 				case FW:{
 					//TODO
@@ -135,19 +146,18 @@ public class VerifooProxy {
 		}
 		
 		
-		private void checkNffg(NFFG nffg) throws BadNffgException{
-			List<Node> nodes = nffg.getNode();
+		private void checkNffg() throws BadNffgException{
             long nMailServer = nodes.stream()
-	            	 .filter((n) -> {return n.getFunctionalType() == FName.MAIL_SERVER;})
+	            	 .filter((n) -> {return getFunctionalType(n.getVNF()) == FName.MAIL_SERVER;})
 	            	 .count();
             long nWebServer = nodes.stream()
-	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_SERVER;})
+	            	 .filter((n) -> {return getFunctionalType(n.getVNF()) == FName.WEB_SERVER;})
 	            	 .count();
             long nMailClient = nodes.stream()
-	            	 .filter((n) -> {return n.getFunctionalType() == FName.MAIL_CLIENT;})
+	            	 .filter((n) -> {return getFunctionalType(n.getVNF()) == FName.MAIL_CLIENT;})
 	            	 .count();
             long nWebClient = nodes.stream()
-	            	 .filter((n) -> {return n.getFunctionalType() == FName.WEB_CLIENT;})
+	            	 .filter((n) -> {return getFunctionalType(n.getVNF()) == FName.WEB_CLIENT;})
 	            	 .count();
             /*System.out.println("nMailServer: " + nMailServer +
             				   " nMailClient: " + nMailClient +
@@ -157,20 +167,18 @@ public class VerifooProxy {
             	System.err.println("Only one client and one server of the same type is allowed");
             	throw new BadNffgException();
             }
-            Node client = nodes.stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_CLIENT || n.getFunctionalType() == FName.WEB_CLIENT;}).findFirst().get();
-            Node server = nodes.stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_SERVER || n.getFunctionalType() == FName.WEB_SERVER;}).findFirst().get();
+            Node client = nodes.stream().filter(n -> {return getFunctionalType(n.getVNF()) == FName.MAIL_CLIENT || getFunctionalType(n.getVNF()) == FName.WEB_CLIENT;}).findFirst().get();
+            Node server = nodes.stream().filter(n -> {return getFunctionalType(n.getVNF()) == FName.MAIL_SERVER || getFunctionalType(n.getVNF()) == FName.WEB_SERVER;}).findFirst().get();
 			
-            /* Redirect output to logfile */
-			PrintStream stdout = System.out;
-		    System.setOut(new LoggerStream(System.out,logger));
+            
 		    
-            setNextHop(client, server, nffg);
+            setNextHop(client, server);
 			
-            System.setOut(stdout);
+            
 			/* End of redirect output to logfile */        
 		}
 
-		private boolean setNextHop(Node source, Node server, NFFG nffg) throws BadNffgException{
+		private boolean setNextHop(Node source, Node server) throws BadNffgException{
 			ArrayList<RoutingTable> rt = new ArrayList<RoutingTable>();
 			//System.out.println("Searching next hop for " + source.getName() + " towards " + server.getName());
 			if(source.getName().compareTo(server.getName()) == 0){
@@ -178,36 +186,42 @@ public class VerifooProxy {
 			}
 			List<Link> outgoingLinks = nffg.getLink().stream().filter(l -> l.getSourceNode().compareTo(source.getName()) == 0).collect(Collectors.toList());
 			if(outgoingLinks.size() == 0){
-				logger.debug("Route: From " + source.getName() 
+				logger.error("Route: From " + source.getName() 
 									+ " to " + nctx.am.get(server.getIp()) 
 									+ " -> Dead End");
 				throw new BadNffgException();
 			}
+			/* Redirect output to logfile */
+			PrintStream stdout = System.out;
+		    
 			for(Link link : outgoingLinks){
-				Node next = nffg.getNode().stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
-				if(setNextHop(next, server, nffg)){
-					logger.debug("Route: From " + source.getName() 
-									+ " to " + nctx.am.get(server.getIp()) 
-									+ " -> next hop: " + netobjs.get(next));
+				Node next = nodes.stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
+				if(setNextHop(next, server)){
+					System.out.println("Route from " + source.getName() 
+													+ " to " + nctx.am.get(server.getIp()) 
+													+ " -> next hop: " + netobjs.get(next));
+					System.setOut(new LoggerStream(System.out,logger));
 					rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(next), link.getReqLatency(), nctx.x11));
 					net.routingTable2(netobjs.get(source), rt);
+					System.setOut(stdout);
 				}
 			}
+			
 			return true;
 			
 		}
 		
-		public void checkNFFGProperty(NFFG nffg){
+		public void checkNFFGProperty(){
 
-            Node source = nffg.getNode().stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_CLIENT || n.getFunctionalType() == FName.WEB_CLIENT;}).findFirst().get();
-            Node dest = nffg.getNode().stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_SERVER || n.getFunctionalType() == FName.WEB_SERVER;}).findFirst().get();
+            Node source = nodes.stream().filter(n -> {return getFunctionalType(n.getVNF()) == FName.MAIL_CLIENT || getFunctionalType(n.getVNF()) == FName.WEB_CLIENT;}).findFirst().get();
+            Node dest = nodes.stream().filter(n -> {return getFunctionalType(n.getVNF()) == FName.MAIL_SERVER || getFunctionalType(n.getVNF()) == FName.WEB_SERVER;}).findFirst().get();
             
 			IsolationResult ret = this.check.checkIsolationProperty(netobjs.get(source), netobjs.get(dest));
 			if (ret.result == Status.UNSATISFIABLE){
 		     	   System.out.println("UNSAT"); // Nodes a and b are isolated
 		    	}else{
 		     		System.out.println("SAT ");
-		     		System.out.print( ""+ret.model); //p.printModel(ret.model);
+		     		logger.debug( ""+ret.model); //p.printModel(ret.model);
 		     	}
 		}
 		

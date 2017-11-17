@@ -44,12 +44,12 @@ public class Main {
             
 			VerifooProxy test = new VerifooProxy(root.getNFFG(), root.getHosts(), root.getConnections(), root.getVNFCatalog());
 			
-            test.checkNFFGProperty(root.getNFFG());
+            test.checkNFFGProperty();
             
             /* create a Marshaller and marshal to std out
             Marshaller m = jc.createMarshaller();
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-            m.setProperty( Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION,"/xsd/nfvInfo.xsd");
+            m.setProperty( Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION,"./xsd/nfvInfo.xsd");
             m.marshal( root, System.out ); */
         } catch( JAXBException je ) {
         	logger.error("Error while unmarshalling or marshalling");
