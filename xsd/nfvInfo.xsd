@@ -7,6 +7,7 @@
 			<xs:element ref="Hosts"/>
 			<xs:element ref="Connections"/>
 			<xs:element ref="VNF-Catalog"/>
+			<xs:element name="ParsingString" type="xs:string" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -26,7 +27,7 @@
     
 	<xs:key name="VNFKey">
       <xs:selector xpath="VNF-Catalog/VNF" />
-      <xs:field xpath="@FunctionalType" />
+      <xs:field xpath="@name" />
     </xs:key>
 	<xs:keyref name="NodeVNF" refer="VNFKey">
       <xs:selector xpath="NF-FG/Node/VNF" />
@@ -49,6 +50,10 @@
     
     
 	
+	<xs:unique name="IpAddress">
+      <xs:selector xpath="NF-FG/Node" />
+      <xs:field xpath="@Ip" />
+    </xs:unique>
 	<xs:unique name="LinkName">
       <xs:selector xpath="NF-FG/Link" />
       <xs:field xpath="@NF-FG" />
@@ -85,6 +90,7 @@
 		<xs:sequence>
 			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Node"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Link"/>
+			<xs:element name="Property" type="xs:string" maxOccurs="unbounded" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
   </xs:complexType>
@@ -94,7 +100,7 @@
 	<xs:complexType>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="NF-FG" type="xs:string" use="required"/>
-		<xs:attribute name="FunctionalType" type="F-name" use="required"/>
+		<xs:attribute name="VNF" type="xs:string" use="required"/>
 		<xs:attribute name="Ip" type="xs:string" use="required"/>	
 	</xs:complexType>
 </xs:element>
@@ -147,7 +153,7 @@
 <xs:element name="VNF">
 	<xs:complexType>
 		<xs:sequence>
-			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Property"/>
+			<xs:element name="Configuration" type="ConfigurationType" maxOccurs="unbounded" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="FunctionalType" type="F-name" use="required"/>
@@ -179,10 +185,8 @@
     	<xs:minExclusive value="0"/>
  	</xs:restriction>
 </xs:simpleType>
-<xs:element name="Property">
-	<xs:complexType>
-		<xs:attribute name="src" type="xs:string"/>
-		<xs:attribute name="dst" type="xs:string" use="required"/>
-	</xs:complexType>
-</xs:element>
+<xs:complexType name="ConfigurationType">
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+</xs:complexType>
 </xs:schema>
