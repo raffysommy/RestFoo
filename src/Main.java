@@ -2,6 +2,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -11,6 +12,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.microsoft.z3.Context;
@@ -20,7 +23,10 @@ import it.polito.verifoo.rest.common.*;
 
 public class Main {
 	Context ctx;
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MalformedURLException{
+		System.setProperty("log4j.configuration", new File("resources", "log4j2.xml").toURI().toURL().toString());
+        Logger logger = LogManager.getLogger("mylog"); 
+
 		// TODO Auto-generated method stub
 		try {
             // create a JAXBContext capable of handling the generated classes
@@ -40,29 +46,30 @@ public class Main {
 			
             test.checkNFFGProperty(root.getNFFG());
             
-            // create a Marshaller and marshal to std out
+            /* create a Marshaller and marshal to std out
             Marshaller m = jc.createMarshaller();
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
             m.setProperty( Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION,"/xsd/nfvInfo.xsd");
-            m.marshal( root, System.out );
+            m.marshal( root, System.out ); */
         } catch( JAXBException je ) {
-        	System.out.println("Error while unmarshalling or marshalling");
-            je.printStackTrace();
+        	logger.error("Error while unmarshalling or marshalling");
+            logger.error(je);
             System.exit(1);
         } catch( IOException ioe ) {
-            ioe.printStackTrace();
+            logger.error(ioe);
             System.exit(1);
         } catch( ClassCastException cce) {
-        	System.out.println("Wrong data type found in XML document");
-        	cce.printStackTrace();
+        	logger.error("Wrong data type found in XML document");
+        	logger.error(cce);
             System.exit(1);
         } catch (BadNffgException e) {
-			System.out.println("NFFG semantically incorrect");
-        	e.printStackTrace();
+			logger.error("NFFG semantically incorrect");
+        	logger.error(e);
             System.exit(1);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
+			System.exit(1);
 		}
 	}
 

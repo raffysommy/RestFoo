@@ -40,7 +40,7 @@
     <!-- Compile the code from ${src} into ${build} -->
     <javac 
     	encoding="ISO-8859-1"
-    	classpath="junit.jar;org.hamcrest.core_1.3.0.v201303031735.jar;com.microsoft.z3.jar;Verifoo.jar"
+    	classpath="lib/junit/org.hamcrest.core_1.3.0.v201303031735.jar;lib/junit/junit.jar;lib/Verifoo.jar;lib/com.microsoft.z3.jar;lib/lib4j/log4j-api-2.9.1.jar;lib/lib4j/log4j-core-2.9.1.jar"
     	includeantruntime="false" 
     	srcdir="${src.dir}" 
     	destdir="${build.dir}" 
@@ -63,8 +63,8 @@
   <target name="test" depends="compile">
 	    <junit printsummary="yes" haltonfailure="no" showoutput="yes">
 		<!-- Project classpath, must include junit.jar -->
-		<classpath location="junit.jar" />
-	    <classpath location="org.hamcrest.core_1.3.0.v201303031735.jar" />
+		<classpath location="lib/junit/junit.jar" />
+	    <classpath location="lib/junit/org.hamcrest.core_1.3.0.v201303031735.jar" />
 		<!-- test class -->
 		<classpath location="${build.dir}" />
 		<test name="it.polito.verifoo.rest.test.TestCase"

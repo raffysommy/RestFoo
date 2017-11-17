@@ -1,9 +1,14 @@
 package it.polito.verifoo.rest.common;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.microsoft.z3.Context;
 import com.microsoft.z3.DatatypeExpr;
@@ -11,6 +16,7 @@ import com.microsoft.z3.Status;
 
 import it.polito.verifoo.components.RoutingTable;
 import it.polito.verifoo.rest.jaxb.*;
+import it.polito.verifoo.rest.logger.LoggerStream;
 import it.polito.verigraph.mcnet.components.*;
 import it.polito.verigraph.mcnet.netobjs.*;
 
@@ -21,6 +27,7 @@ public class VerifooProxy {
 	    private HashMap<Node,NetworkObject> netobjs;
 	    private ArrayList<Tuple<NetworkObject,ArrayList<DatatypeExpr>>> adm;
 		public Checker check;
+		private Logger logger = LogManager.getLogger("mylog");
 	    public VerifooProxy(NFFG nffg,Hosts hosts,Connections conns,VNFCatalog vnf) throws BadNffgException{
 			HashMap<String, String> cfg = new HashMap<String, String>();
 		    cfg.put("model", "true");
@@ -146,7 +153,15 @@ public class VerifooProxy {
             }
             Node client = nodes.stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_CLIENT || n.getFunctionalType() == FName.WEB_CLIENT;}).findFirst().get();
             Node server = nodes.stream().filter(n -> {return n.getFunctionalType() == FName.MAIL_SERVER || n.getFunctionalType() == FName.WEB_SERVER;}).findFirst().get();
+			
+            /* Redirect output to logfile */
+			PrintStream stdout = System.out;
+		    System.setOut(new LoggerStream(System.out,logger));
+		    
             setNextHop(client, server, nffg);
+			
+            System.setOut(stdout);
+			/* End of redirect output to logfile */
 			
 		}
 		
@@ -158,7 +173,7 @@ public class VerifooProxy {
 			}
 			List<Link> outgoingLinks = nffg.getLink().stream().filter(l -> l.getSourceNode().compareTo(source.getName()) == 0).collect(Collectors.toList());
 			if(outgoingLinks.size() == 0){
-				System.out.println("Route: From " + source.getName() 
+				logger.debug("Route: From " + source.getName() 
 									+ " to " + nctx.am.get(server.getIp()) 
 									+ " -> Dead End");
 				throw new BadNffgException();
@@ -166,7 +181,7 @@ public class VerifooProxy {
 			for(Link link : outgoingLinks){
 				Node next = nffg.getNode().stream().filter(n -> n.getName().compareTo(link.getDestNode()) == 0).findFirst().get();
 				if(setNextHop(next, server, nffg)){
-					System.out.println("Route: From " + source.getName() 
+					logger.debug("Route: From " + source.getName() 
 									+ " to " + nctx.am.get(server.getIp()) 
 									+ " -> next hop: " + netobjs.get(next));
 					rt.add(new RoutingTable(nctx.am.get(server.getIp()), netobjs.get(next), link.getReqLatency(), nctx.x11));
