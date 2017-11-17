@@ -146,10 +146,12 @@
 </xs:element>
 <xs:element name="VNF">
 	<xs:complexType>
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" minOccurs="0" ref="Property"/>
+		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="FunctionalType" type="F-name" use="required"/>
 		<xs:attribute name="reqDiskStorage" type="positiveFloat" use="required"/>
-		<xs:attribute name="configuration"  type="xs:string"/>
 	</xs:complexType>
 </xs:element>
 <xs:complexType name="NodeRefType">
@@ -176,5 +178,11 @@
     <xs:restriction base="xs:float">
     	<xs:minExclusive value="0"/>
  	</xs:restriction>
-  </xs:simpleType>
+</xs:simpleType>
+<xs:element name="Property">
+	<xs:complexType>
+		<xs:attribute name="src" type="xs:string"/>
+		<xs:attribute name="dst" type="xs:string" use="required"/>
+	</xs:complexType>
+</xs:element>
 </xs:schema>

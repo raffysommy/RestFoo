@@ -52,9 +52,15 @@ public class VerifooProxy {
 		    netobjs.entrySet().forEach(e ->  {
 							    	net.attach(e.getValue());
 							    }
-		    		);
+		    );
+		    
 		    check = new Checker(ctx,nctx,net);
 	    }
+		private void generateAcl(Node n){
+			if(n.getFunctionalType().equals(FName.FW)){
+				
+			}
+		}
 	    private void generateAddressMapping(Node n){
 			ArrayList<DatatypeExpr> al = new ArrayList<DatatypeExpr>();
 			//System.out.println("Adding " + n.getIp() +"/"+ nctx.am.get(n.getIp()));
@@ -161,10 +167,9 @@ public class VerifooProxy {
             setNextHop(client, server, nffg);
 			
             System.setOut(stdout);
-			/* End of redirect output to logfile */
-			
+			/* End of redirect output to logfile */        
 		}
-		
+
 		private boolean setNextHop(Node source, Node server, NFFG nffg) throws BadNffgException{
 			ArrayList<RoutingTable> rt = new ArrayList<RoutingTable>();
 			//System.out.println("Searching next hop for " + source.getName() + " towards " + server.getName());
