@@ -2,3 +2,6 @@ language: java
 install: ant test
 jdk:
   - oraclejdk8
+script:
+  - ant test
+  - cat log/*.txt

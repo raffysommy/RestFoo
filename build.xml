@@ -61,7 +61,7 @@
     <jar destfile="${dist.dir}/src-${DSTAMP}.jar" basedir="${src.dir}"/>
   </target>
   <target name="test" depends="compile">
-	    <junit printsummary="yes" haltonfailure="no" showoutput="yes">
+	    <junit printsummary="yes" haltonfailure="no" showoutput="true">
 		<!-- Project classpath, must include junit.jar -->
 		<classpath location="lib/junit/junit.jar" />
 	    <classpath location="lib/junit/org.hamcrest.core_1.3.0.v201303031735.jar" />
