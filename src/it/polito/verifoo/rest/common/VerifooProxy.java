@@ -58,7 +58,7 @@ public class VerifooProxy {
 							    	net.attach(e.getValue());
 							    }
 		    );
-		    
+		    nodes.forEach(this::generateAcl);
 		    check = new Checker(ctx,nctx,net);
 	    }
 	    
@@ -67,9 +67,19 @@ public class VerifooProxy {
 	    }
 	    
 		private void generateAcl(Node n){
-			
-			if(getFunctionalType(n.getVNF()).equals(FName.FW)){
-				
+			VNF vnf=this.vnfCat.stream().filter(nf->nf.getName().compareTo(n.getVNF())==0).findFirst().get();
+			if(vnf.getFunctionalType().equals(FName.FW)){
+				vnf.getConfiguration().forEach((c)->{
+					if(c.getName()!=null && c.getValue() !=null && !c.getName().isEmpty()&& !c.getValue().isEmpty()){
+				    	ArrayList<Tuple<DatatypeExpr,DatatypeExpr>> acl = new ArrayList<Tuple<DatatypeExpr,DatatypeExpr>>();
+						((AclFirewall)netobjs.get(n)).addAcls(acl);
+						Tuple<DatatypeExpr,DatatypeExpr> rule=new Tuple<DatatypeExpr,DatatypeExpr>(nctx.am.get(c.getName()),nctx.am.get(c.getValue()));
+						acl.add(rule);
+						logger.debug("Added acl:"+ rule.toString());
+					}else{
+						throw new IllegalArgumentException();
+					} 
+				});
 			}
 		}
 	    private void generateAddressMapping(Node n){
